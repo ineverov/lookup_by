@@ -219,9 +219,11 @@ module LookupBy
       return if column == @primary_key
 
       @klass.transaction(requires_new: true) do
-        @klass.create(column => value)
-      rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
-        db_read(value)
+        begin
+          @klass.create(column => value)
+        rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
+          db_read(value)
+        end
       end
     end
 
