@@ -220,9 +220,9 @@ module LookupBy
 
       @klass.transaction(requires_new: true) do
         @klass.create(column => value)
+      rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
+        db_read(value)
       end
-    rescue ActiveRecord::RecordNotUnique, PG::UniqueViolation
-      db_read(value)
     end
 
     def column_for(value)
